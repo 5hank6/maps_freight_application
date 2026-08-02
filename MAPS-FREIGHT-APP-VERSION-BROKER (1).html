@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAPS FREIGHT — Version Broker</title>
+<style>
+:root{--ink:#0d1117;--bg:#f2f0ea;--card:#fff;--line:#ddd6c8;--green:#17854b;--greenbg:#e4f4eb;--red:#b3311a;--redbg:#fdeee9;--amber:#c78c08;--amberbg:#fdf5dd;--purple:#63307a;--purplebg:#efe4f5;--blue:#2058d4;--bluebg:#e6edfa;--yellow:#f4c542;--asphalt:#171b22;--steel:#6b7280}
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,'Segoe UI',Roboto,sans-serif}
+body{background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5}
+#app{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);position:relative;padding-bottom:70px}
+.topbar{background:var(--asphalt);color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:50}
+.topbar .logo{font-weight:800;font-size:14px;letter-spacing:1px}
+.topbar .logo span{color:var(--yellow)}
+.topbar .tb-right{display:flex;gap:8px;align-items:center;font-size:11px}
+.pill{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.5px}
+.pill-g{background:var(--green);color:#fff}.pill-y{background:var(--yellow);color:#111}.pill-p{background:var(--purple);color:#fff}.pill-r{background:var(--red);color:#fff}.pill-gray{background:#444;color:#ccc}
+.screen{padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:12px}
+h1{font-size:22px;margin-bottom:6px}h2{font-size:17px;margin-bottom:8px}h3{font-size:14px;margin-bottom:6px}
+.sub{color:var(--steel);font-size:12.5px;margin-bottom:12px}
+.btn{display:block;width:100%;padding:13px;border:none;border-radius:8px;background:var(--green);color:#fff;font-size:14px;font-weight:700;cursor:pointer;margin-top:8px}
+.btn:active{opacity:.85}
+.btn-o{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+.btn-y{background:var(--yellow);color:#111}
+.btn-r{background:var(--red)}
+.btn-p{background:var(--purple)}
+.btn-sm{padding:8px 12px;font-size:12px;width:auto;display:inline-block;margin:4px 4px 0 0}
+input,select,textarea{width:100%;padding:11px;border:1.5px solid var(--line);border-radius:8px;font-size:14px;margin-bottom:10px;background:#fff}
+label{font-size:12px;font-weight:600;color:#444;display:block;margin-bottom:4px}
+label .req{color:var(--red)}label .opt{color:var(--steel);font-weight:400}
+.role-card{background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:16px;margin-bottom:10px;cursor:pointer;display:flex;gap:12px;align-items:center}
+.role-card:active{border-color:var(--green)}
+.role-icon{font-size:28px}
+.role-card h3{margin:0}.role-card p{font-size:12px;color:var(--steel)}
+.err{background:var(--redbg);color:var(--red);padding:10px;border-radius:8px;font-size:12.5px;margin-bottom:10px;font-weight:600}
+.ok{background:var(--greenbg);color:var(--green);padding:10px;border-radius:8px;font-size:12.5px;margin-bottom:10px;font-weight:600}
+.info{background:var(--bluebg);color:var(--blue);padding:10px;border-radius:8px;font-size:12.5px;margin-bottom:10px}
+.warn{background:var(--amberbg);color:#8a6206;padding:10px;border-radius:8px;font-size:12.5px;margin-bottom:10px}
+.tabs{display:flex;background:#fff;border-bottom:2px solid var(--line);position:sticky;top:44px;z-index:40;overflow-x:auto}
+.tab{flex:1;padding:11px 6px;text-align:center;font-size:11.5px;font-weight:700;color:var(--steel);cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;min-width:70px}
+.tab.on{color:var(--ink);border-bottom-color:var(--green)}
+.listing{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:10px}
+.listing .l-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+.listing .l-route{font-weight:800;font-size:15px}
+.listing .l-meta{font-size:12px;color:var(--steel);margin:2px 0}
+.listing .l-badges{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+.b{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px}
+.b-g{background:var(--greenbg);color:var(--green)}.b-y{background:var(--amberbg);color:#8a6206}.b-r{background:var(--redbg);color:var(--red)}.b-p{background:var(--purplebg);color:var(--purple)}.b-gray{background:#eee;color:#666}.b-bl{background:var(--bluebg);color:var(--blue)}
+.parda{background:repeating-linear-gradient(45deg,#f5f2ea,#f5f2ea 8px,#ece7db 8px,#ece7db 16px);border:1px dashed var(--line);border-radius:8px;padding:12px;text-align:center;font-size:12px;color:#8a8275;margin-top:8px}
+.revealed{background:var(--asphalt);color:#e8e6df;border-radius:8px;padding:12px;margin-top:8px;font-size:13px}
+.revealed div{padding:3px 0;border-bottom:1px dashed rgba(255,255,255,.1)}
+.revealed div:last-child{border:none}
+.revealed b{color:var(--yellow)}
+.bottomnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:#fff;border-top:2px solid var(--line);display:flex;z-index:60}
+.bn{flex:1;padding:9px 4px;text-align:center;font-size:10px;font-weight:700;color:var(--steel);cursor:pointer}
+.bn.on{color:var(--green)}
+.bn .ic{font-size:18px;display:block}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:8px;padding:12px;text-align:center}
+.stat .n{font-size:22px;font-weight:800;color:var(--green)}
+.stat .l{font-size:10px;color:var(--steel);font-weight:600;letter-spacing:.5px}
+.chatbox{background:#e5ddd5;border-radius:10px;padding:10px;max-height:300px;overflow-y:auto;margin-bottom:8px}
+.cmsg{max-width:80%;padding:8px 11px;border-radius:9px;margin:5px 0;font-size:13px;background:#fff}
+.cmsg.me{background:#dcf8c6;margin-left:auto}
+.cmsg .who{font-size:9px;color:var(--steel);font-weight:700;margin-bottom:2px}
+.cmsg.blocked{background:var(--redbg);color:var(--red);font-size:11px;text-align:center;max-width:100%;font-weight:600}
+.notif{background:#fff;border-left:4px solid var(--green);border-radius:6px;padding:10px 12px;margin-bottom:8px;font-size:12.5px}
+.notif .nt{font-size:10px;color:var(--steel);margin-top:3px}
+.wa-badge{font-size:9px;background:#25d366;color:#fff;padding:1px 6px;border-radius:3px;font-weight:700;margin-right:4px}
+.row{display:flex;gap:8px}.row>*{flex:1}
+.hr{border:none;border-top:1px dashed var(--line);margin:12px 0}
+.small{font-size:11.5px;color:var(--steel)}
+.adm-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px dashed var(--line);font-size:13px}
+.adm-row:last-child{border:none}
+.otp-demo{background:var(--asphalt);color:var(--yellow);padding:8px;border-radius:8px;text-align:center;font-weight:800;letter-spacing:4px;font-size:18px;margin-bottom:10px}
+.terms{font-size:11px;color:var(--steel);max-height:120px;overflow-y:auto;background:#faf8f3;border:1px solid var(--line);border-radius:8px;padding:10px;margin-bottom:10px}
+.lockbtn{background:var(--asphalt);color:var(--yellow);border:none;padding:10px;border-radius:8px;font-weight:800;font-size:13px;width:100%;cursor:pointer;margin-top:8px}
+.freefloat{position:fixed;bottom:64px;left:50%;transform:translateX(-50%);width:calc(100% - 24px);max-width:456px;background:var(--purple);color:#fff;padding:12px 14px;border-radius:10px;font-size:12.5px;z-index:55;box-shadow:0 4px 16px rgba(0,0,0,.25)}
+.freefloat b{color:var(--yellow)}
+.checkline{display:flex;gap:8px;align-items:flex-start;font-size:12px;margin-bottom:8px;color:#444}
+.checkline input{width:auto;margin:2px 0 0}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* ============ MAPS FREIGHT VERSION BROKER — WORKING PROTOTYPE ============ */
+/* All data in-memory. Demo OTP: 123456. Demo payments simulated. */
+
+const S = {
+  users: [
+    {id:'u1',role:'shipper',name:'Rajesh Patel',phone:'9812345001',company:'Patel Chemical Industries',city:'Gandhidham',state:'Gujarat',pan:'ABCDE1234F',gst:'',cats:['Chemicals'],status:'active',wallet:500},
+    {id:'u2',role:'transporter',name:'Mahesh Singh',phone:'9812345002',company:'Singh Roadlines',city:'Gandhidham',state:'Gujarat',pan:'FGHIJ5678K',gst:'',roleType:'Individual Truck Owner',numTrucks:'2-5',truckTypes:['Closed Body','Open Body'],status:'active',wallet:300},
+    {id:'u3',role:'broker',name:'Vikram Joshi',phone:'9812345003',firm:'Joshi Freight Links',city:'Gandhidham',state:'Gujarat',pan:'KLMNO9012P',aadhaar:'123412341234',years:'5-10',routes:['Gujarat↔Delhi/NCR','Gujarat↔Rajasthan'],status:'active',approved:true,tier:'standard',subEnd:'2026-08-05',wallet:1000,unlocks:0,deals:14,violations:0},
+    {id:'u4',role:'broker',name:'Suresh Kumar',phone:'9812345004',firm:'SK Logistics Agency',city:'Adipur',state:'Gujarat',pan:'PQRST3456U',aadhaar:'432143214321',years:'3-5',routes:['Gujarat↔Mumbai'],status:'pending',approved:false,tier:'free_preview',wallet:0,unlocks:0,deals:0,violations:0}
+  ],
+  goods: [
+    {id:'g1',by:'u1',byRole:'shipper',type:'Chemicals',wt:12,from:'Gandhidham',to:'Delhi',date:'2026-07-12',addr:'GIDC Phase 2, Plot 47, Gandhidham',rate:'₹40,000–45,000',notes:'Hazardous cargo, needs closed body with docs',status:'live',views:14,unlockCount:0,created:Date.now()-2*3600e3},
+    {id:'g2',by:'u2',byRole:'transporter',type:'Textiles',wt:8,from:'Gandhidham',to:'Ahmedabad',date:'2026-07-11',addr:'Anjar Road Warehouse 3',rate:'₹18,000–22,000',notes:'',status:'live',views:9,unlockCount:0,created:Date.now()-5*3600e3},
+    {id:'g3',by:'u1',byRole:'shipper',type:'FMCG',wt:15,from:'Mundra',to:'Ludhiana',date:'2026-07-13',addr:'Mundra SEZ Gate 2',rate:'₹55,000',notes:'Palletized, forklift at pickup',status:'live',views:22,unlockCount:0,created:Date.now()-26*3600e3}
+  ],
+  trucks: [
+    {id:'t1',by:'u2',type:'Closed Body',cap:20,city:'Gandhidham',to:'Delhi / North India',date:'2026-07-11',detour:true,truckNo:'GJ-12-AB-1234',ownerName:'Mahesh Singh',ownerPhone:'9812345002',driverName:'Ramesh Kumar',driverPhone:'8812345678',parking:'Gandhidham Truck Terminal, Gate 3',status:'live',views:11,unlockCount:0,created:Date.now()-45*60e3},
+    {id:'t2',by:'u2',type:'Open Body',cap:14,city:'Gandhidham',to:'Ahmedabad',date:'2026-07-12',detour:false,truckNo:'GJ-12-CD-5678',ownerName:'Mahesh Singh',ownerPhone:'9812345002',driverName:'Sohan Lal',driverPhone:'8812349999',parking:'Adipur bypass parking',status:'live',views:6,unlockCount:0,created:Date.now()-8*3600e3}
+  ],
+  unlocks: [], // {id, by, kind:'goods'|'truck', lid, amount, deal:'pending'|'confirmed'|'failed', at}
+  tx: [],      // {id, uid, type, amount, after, at}
+  chats: {},   // unlockId -> [{from, text, blocked, at}]
+  notifs: [],  // {uid, text, wa, at}
+  revenue: {sub:2000, unlock:0}, // Vikram already subscribed once
+  cur: null, view:'home', tab:'', sel:null, otp:null, pendReg:null, regRole:null
+};
+const $=id=>document.getElementById(id);
+const app=()=>$('app');
+const fmt=n=>'₹'+n.toLocaleString('en-IN');
+const ago=t=>{const m=Math.floor((Date.now()-t)/60000);if(m<60)return m+' min ago';const h=Math.floor(m/60);if(h<24)return h+' hrs ago';return Math.floor(h/24)+' days ago'};
+const notify=(uid,text,wa=true)=>{S.notifs.unshift({uid,text,wa,at:Date.now()})};
+const me=()=>S.cur;
+const byId=id=>S.users.find(u=>u.id===id);
+const hasUnlock=(uid,kind,lid)=>S.unlocks.find(u=>u.by===uid&&u.kind===kind&&u.lid===lid);
+
+/* ---------- VALIDATION ---------- */
+const vPAN=p=>/^[A-Z]{5}[0-9]{4}[A-Z]$/.test(p);
+const vPhone=p=>/^[6-9]\d{9}$/.test(p);
+const vAad=a=>/^\d{12}$/.test(a);
+const vGST=g=>g===''||/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][0-9A-Z]Z[0-9A-Z]$/.test(g);
+// PAN role-separation rule
+function panCheck(pan, newRole){
+  const ex = S.users.filter(u=>u.pan===pan);
+  if(!ex.length) return {ok:true};
+  for(const u of ex){
+    const exBroker = u.role==='broker', newBroker = newRole==='broker';
+    if(exBroker!==newBroker) return {ok:false,msg:`This PAN is already registered as a ${u.role.toUpperCase()}. A Broker account cannot share identity with Shipper/Transporter accounts. Contact support.`};
+    if(u.role===newRole) return {ok:false,msg:`This PAN already has a ${newRole} account. Please login instead.`};
+  }
+  return {ok:true}; // shipper<->transporter dual role allowed
+}
+const blockRx=[/(\+?91)?[\s-]?[6-9]\d{9}/,/\d{10}/,/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/i];
+const blockKw=['whatsapp pe','call karo','number de','phone number','mobile number','mera number'];
+const isBlocked=t=>{const lo=t.toLowerCase();return blockRx.some(r=>r.test(t))||blockKw.some(k=>lo.includes(k))};
+
+/* ---------- ROUTER ---------- */
+function go(view,tab,sel){S.view=view;if(tab!==undefined)S.tab=tab;if(sel!==undefined)S.sel=sel;render()}
+function render(){
+  const v=S.view;
+  let h='';
+  if(v==='home')h=Home();
+  else if(v==='login')h=Login();
+  else if(v==='otp')h=OTP();
+  else if(v==='reg')h=Reg();
+  else if(v==='app')h=Portal();
+  else if(v==='admin')h=Admin();
+  app().innerHTML=h;
+  window.scrollTo(0,0);
+}
+
+/* ---------- TOPBAR ---------- */
+function Top(extra=''){
+  const u=me();
+  let tag='';
+  if(u){
+    if(u.role==='broker')tag=u.tier==='standard'?'<span class="pill pill-g">✓ VERIFIED BROKER</span>':u.approved?'<span class="pill pill-y">APPROVED — SUBSCRIBE</span>':'<span class="pill pill-gray">FREE PREVIEW</span>';
+    else tag=`<span class="pill pill-g">${u.role.toUpperCase()}</span>`;
+  }
+  return `<div class="topbar"><div class="logo">MAPS <span>FREIGHT</span></div><div class="tb-right">${tag}${u?`<span class="pill pill-y" onclick="logout()" style="cursor:pointer">EXIT</span>`:''}</div></div>${extra}`;
+}
+function logout(){S.cur=null;go('home')}
+
+/* ---------- HOME / ROLE SELECT ---------- */
+function Home(){
+  return Top()+`<div class="screen">
+  <h1>Welcome to MAPS FREIGHT</h1>
+  <p class="sub">India's broker-first freight platform. Fill empty return trucks. Earn from every connection.</p>
+  <div class="role-card" onclick="startReg('shipper')"><div class="role-icon">📦</div><div><h3>I Have Goods to Ship</h3><p>Post cargo free. Brokers connect you with cheap return trucks.</p></div></div>
+  <div class="role-card" onclick="startReg('transporter')"><div class="role-icon">🚚</div><div><h3>I Have Trucks</h3><p>Post empty trucks free. Get return loads. Also post goods.</p></div></div>
+  <div class="role-card" onclick="startReg('broker')"><div class="role-icon">🤝</div><div><h3>I Am a Broker</h3><p>Free preview. ₹2,000/month full access. ₹150 per unlock. Connect &amp; earn.</p></div></div>
+  <hr class="hr">
+  <button class="btn btn-o" onclick="go('login')">Already registered? Login</button>
+  <button class="btn btn-o" style="border-color:var(--asphalt)" onclick="adminLogin()">🔐 Admin Portal (Aman)</button>
+  <div class="info" style="margin-top:12px"><b>DEMO:</b> Login with 9812345001 (Shipper Rajesh) · 9812345002 (Transporter Mahesh) · 9812345003 (Broker Vikram, subscribed) · 9812345004 (Broker Suresh, pending approval). OTP is always <b>123456</b>.</div>
+  </div>`;
+}
+function adminLogin(){S.cur={id:'admin',role:'admin',name:'Aman Dana'};go('admin','dash')}
+function startReg(role){S.regRole=role;S.pendReg={role};go('login',null,{mode:'reg'})}
+
+/* ---------- LOGIN + OTP ---------- */
+function Login(){
+  const reg=S.sel&&S.sel.mode==='reg';
+  return Top()+`<div class="screen">
+  <h2>${reg?'Register as '+S.regRole.toUpperCase():'Login'}</h2>
+  <p class="sub">${reg?'Step 1 of 3 — Verify your phone':'Enter your registered phone number'}</p>
+  <div class="card">
+    <label>Phone Number <span class="req">*</span></label>
+    <input id="ph" type="tel" maxlength="10" placeholder="10-digit mobile number">
+    <div id="lerr"></div>
+    <button class="btn" onclick="sendOTP(${reg})">Send OTP</button>
+  </div>
+  <button class="btn btn-o" onclick="go('home')">← Back</button></div>`;
+}
+function sendOTP(reg){
+  const p=$('ph').value.trim();
+  if(!vPhone(p)){$('lerr').innerHTML='<div class="err">Enter a valid 10-digit mobile number starting 6-9.</div>';return}
+  if(!reg){
+    const u=S.users.find(x=>x.phone===p);
+    if(!u){$('lerr').innerHTML='<div class="err">No account with this number. Please register.</div>';return}
+    S.pendReg={login:true,uid:u.id};
+  } else {
+    if(S.users.find(x=>x.phone===p)){$('lerr').innerHTML='<div class="err">This phone already has an account. Please login.</div>';return}
+    S.pendReg.phone=p;
+  }
+  S.otp='123456';
+  go('otp');
+}
+function OTP(){
+  return Top()+`<div class="screen"><h2>Verify OTP</h2>
+  <p class="sub">OTP sent via SMS (simulated in demo)</p>
+  <div class="otp-demo">DEMO OTP: 123456</div>
+  <div class="card">
+    <label>Enter 6-digit OTP</label>
+    <input id="otpin" maxlength="6" placeholder="_ _ _ _ _ _" style="text-align:center;letter-spacing:8px;font-size:18px">
+    <div id="oerr"></div>
+    <button class="btn" onclick="verifyOTP()">Verify &amp; Continue</button>
+  </div></div>`;
+}
+function verifyOTP(){
+  if($('otpin').value.trim()!==S.otp){$('oerr').innerHTML='<div class="err">Wrong OTP. Try again. (3 attempts max, then 15-min lockout in real app)</div>';return}
+  if(S.pendReg.login){S.cur=byId(S.pendReg.uid);S.cur.role==='admin'?go('admin','dash'):go('app',defaultTab());return}
+  go('reg');
+}
+function defaultTab(){const r=me().role;return r==='shipper'?'post':r==='transporter'?'postT':'feedG'}
+
+/* ---------- REGISTRATION FORMS ---------- */
+const CITIES=['Gandhidham','Adipur','Anjar','Bhuj','Mundra','Kandla','Ahmedabad','Surat','Rajkot','Vadodara','Delhi','Mumbai','Other'];
+const GOODS=['Chemicals','Grains/Agri','Textiles','Steel/Metal','FMCG','Machinery','Building Material','Petroleum','Other'];
+const TTYPES=['Open Body','Closed Body','Container','Tanker','Flatbed','Trailer'];
+const ROUTES=['Gujarat↔Delhi/NCR','Gujarat↔Mumbai','Gujarat↔Rajasthan','Gujarat↔Punjab','Gujarat↔MP','Pan-India','Other'];
+function opts(a){return a.map(x=>`<option>${x}</option>`).join('')}
+function checks(a,name){return a.map(x=>`<label class="checkline" style="font-weight:400"><input type="checkbox" name="${name}" value="${x}">${x}</label>`).join('')}
+
+function Reg(){
+  const r=S.regRole;
+  let extra='';
+  if(r==='shipper') extra=`
+    <label>Goods You Usually Ship <span class="req">*</span> (select at least 1)</label>${checks(GOODS,'cats')}`;
+  if(r==='transporter') extra=`
+    <label>Your Role <span class="req">*</span></label><select id="rt"><option>Transport Company</option><option>Fleet Owner</option><option>Individual Truck Owner</option></select>
+    <label>Number of Trucks <span class="req">*</span></label><select id="nt"><option>1</option><option>2-5</option><option>5-10</option><option>10+</option></select>
+    <label>Truck Types Operated <span class="req">*</span></label>${checks(TTYPES,'tt')}`;
+  if(r==='broker') extra=`
+    <label>Firm Name <span class="req">*</span></label><input id="firm" placeholder="Your brokerage / agency name">
+    <label>Aadhaar Number <span class="req">*</span></label><input id="aad" maxlength="12" placeholder="12-digit Aadhaar">
+    <label>Aadhaar Card Photo <span class="req">*</span> <span class="opt">(demo: tap to simulate upload)</span></label>
+    <button type="button" class="btn btn-o btn-sm" id="aadup" onclick="this.textContent='✓ aadhaar_front.jpg uploaded';this.dataset.up='1'">📎 Upload Aadhaar image</button><br>
+    <label style="margin-top:8px">Years in Business <span class="req">*</span></label><select id="yrs"><option>1-3</option><option>3-5</option><option>5-10</option><option>10+</option></select>
+    <label>Routes You Operate <span class="req">*</span></label>${checks(ROUTES,'rts')}
+    <label>How did you hear about MAPS FREIGHT? <span class="opt">(optional)</span></label><input id="ref" placeholder="Referral / group / friend">`;
+  return Top()+`<div class="screen"><h2>Register — ${r.toUpperCase()}</h2>
+  <p class="sub">Step 2 of 3 — Your details · Phone ✓ ${S.pendReg.phone}</p>
+  <div class="card">
+    <label>Full Name <span class="req">*</span></label><input id="nm" placeholder="Your name">
+    <label>Company / Firm Name <span class="opt">(optional${r==='broker'?' — firm asked below':''})</span></label>${r==='broker'?'':'<input id="co" placeholder="Business name">'}
+    <label>Email <span class="opt">(optional)</span></label><input id="em" type="email" placeholder="you@example.com">
+    <div class="row"><div><label>City <span class="req">*</span></label><select id="ct">${opts(CITIES)}</select></div>
+    <div><label>State <span class="req">*</span></label><input id="st" value="Gujarat"></div></div>
+    <label>PAN Number <span class="req">*</span></label><input id="pan" maxlength="10" placeholder="ABCDE1234F" style="text-transform:uppercase">
+    <label>GST Number <span class="opt">(optional)</span></label><input id="gst" maxlength="15" placeholder="15-char GSTIN" style="text-transform:uppercase">
+    ${extra}
+    <hr class="hr">
+    <div class="terms"><b>TERMS OF USE (summary)</b><br>1. MAPS FREIGHT is an information platform. Deals, rates, payments and delivery are strictly between the connected parties. 2. Unlock fees (₹150) are for access to contact information and are non-refundable once details are revealed, except when a listing is confirmed stale within 24 hours. 3. Broker membership (₹2,000/month) renews monthly; no pro-rata refunds. 4. Sharing phone numbers/emails inside platform chat is prohibited; repeat violations lead to suspension. 5. Posting fake or expired listings leads to account ban. 6. One PAN = one role tier: a Broker identity cannot also hold Shipper/Transporter accounts. 7. All data provided must be accurate; misrepresentation is grounds for termination.</div>
+    <label class="checkline"><input type="checkbox" id="tnc"> I accept the Terms of Use and confirm my details are accurate. <span class="req">*</span></label>
+    <div id="rerr"></div>
+    <button class="btn" onclick="submitReg()">Create Account →</button>
+  </div></div>`;
+}
+function gv(id){const e=$(id);return e?e.value.trim():''}
+function gchecks(name){return [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(c=>c.value)}
+function submitReg(){
+  const r=S.regRole, E=m=>{$('rerr').innerHTML=`<div class="err">${m}</div>`};
+  const nm=gv('nm'),pan=gv('pan').toUpperCase(),gst=gv('gst').toUpperCase();
+  if(nm.length<3)return E('Full name required (min 3 characters).');
+  if(!vPAN(pan))return E('Invalid PAN format. Expected: ABCDE1234F');
+  if(!vGST(gst))return E('Invalid GST format (or leave blank).');
+  const pc=panCheck(pan,r); if(!pc.ok)return E(pc.msg);
+  if(!$('tnc').checked)return E('You must accept the Terms of Use.');
+  const base={id:'u'+(S.users.length+1)+Date.now()%1000,role:r,name:nm,phone:S.pendReg.phone,email:gv('em'),city:gv('ct'),state:gv('st'),pan,gst,status:'active',wallet:0};
+  if(r==='shipper'){
+    const cats=gchecks('cats');if(!cats.length)return E('Select at least one goods category.');
+    Object.assign(base,{company:gv('co'),cats});
+  }
+  if(r==='transporter'){
+    const tt=gchecks('tt');if(!tt.length)return E('Select at least one truck type.');
+    Object.assign(base,{company:gv('co'),roleType:gv('rt'),numTrucks:gv('nt'),truckTypes:tt});
+  }
+  if(r==='broker'){
+    const firm=gv('firm'),aad=gv('aad'),rts=gchecks('rts');
+    if(firm.length<3)return E('Firm name required.');
+    if(!vAad(aad))return E('Aadhaar must be 12 digits.');
+    if(!$('aadup').dataset.up)return E('Please upload Aadhaar image (tap the upload button).');
+    if(!rts.length)return E('Select at least one route.');
+    Object.assign(base,{firm,aadhaar:aad,years:gv('yrs'),routes:rts,ref:gv('ref'),approved:false,tier:'free_preview',status:'pending',unlocks:0,deals:0,violations:0});
+  }
+  S.users.push(base);S.cur=base;
+  notify(base.id,r==='broker'?'Welcome! Your broker account is under verification. You are in FREE PREVIEW — browse listings now; unlocking activates after approval + subscription.':'✅ Your account is live! You can post immediately.');
+  if(r==='broker')notify('admin','New broker registration pending approval: '+base.name+' ('+base.firm+')');
+  go('app',r==='shipper'?'post':r==='transporter'?'postT':'feedG');
+}
+
+/* ---------- PORTALS ---------- */
+function Portal(){
+  const u=me();
+  if(u.role==='shipper')return Shipper();
+  if(u.role==='transporter')return Transporter();
+  return Broker();
+}
+function nav(items){
+  return `<div class="bottomnav">${items.map(i=>`<div class="bn ${S.tab===i.t?'on':''}" onclick="go('app','${i.t}')"><span class="ic">${i.ic}</span>${i.l}</div>`).join('')}</div>`;
+}
+function notifPanel(){
+  const mine=S.notifs.filter(n=>n.uid===me().id).slice(0,15);
+  return `<h2>Notifications</h2><p class="sub">WhatsApp + in-app alerts (simulated real-time)</p>`+
+  (mine.length?mine.map(n=>`<div class="notif">${n.wa?'<span class="wa-badge">WA</span>':''}${n.text}<div class="nt">${ago(n.at)}</div></div>`).join(''):'<div class="card small">No notifications yet.</div>');
+}
+function walletPanel(){
+  const u=me();
+  const tx=S.tx.filter(t=>t.uid===u.id).slice(0,10);
+  return `<h2>Wallet</h2>
+  <div class="card" style="background:var(--asphalt);color:#fff"><div style="font-size:12px;opacity:.7">BALANCE</div><div style="font-size:32px;font-weight:800;color:var(--yellow)">${fmt(u.wallet)}</div></div>
+  <div class="card"><h3>Add Money (demo — instant credit)</h3>
+  <div class="row"><button class="btn btn-sm btn-y" onclick="topup(300)">+₹300</button><button class="btn btn-sm btn-y" onclick="topup(500)">+₹500</button><button class="btn btn-sm btn-y" onclick="topup(1000)">+₹1000</button></div>
+  <p class="small" style="margin-top:8px">Real app: Razorpay UPI/card checkout → webhook credits wallet.</p></div>
+  <div class="card"><h3>Transactions</h3>${tx.length?tx.map(t=>`<div class="adm-row"><span>${t.type}</span><span style="font-weight:700;color:${t.amount>0?'var(--green)':'var(--red)'}">${t.amount>0?'+':''}${fmt(t.amount)}</span></div>`).join(''):'<p class="small">No transactions yet.</p>'}</div>`;
+}
+function topup(a){const u=me();u.wallet+=a;S.tx.unshift({uid:u.id,type:'Wallet Top-up (UPI)',amount:a,after:u.wallet,at:Date.now()});notify(u.id,`💰 ${fmt(a)} added to wallet. Balance: ${fmt(u.wallet)}`);render()}
+
+/* ----- LISTING CARDS ----- */
+function goodsCard(g,viewer){
+  const un=hasUnlock(viewer.id,'goods',g.id);
+  const canUnlock=viewer.role!=='shipper'||g.by!==viewer.id;
+  const isBrokerLocked=viewer.role==='broker'&&viewer.tier==='free_preview';
+  const mine=g.by===viewer.id;
+  let bstat=g.status==='live'?'<span class="b b-g">● LIVE</span>':g.status==='unconfirmed'?'<span class="b b-y">⚠ UNCONFIRMED</span>':g.status==='booked'?'<span class="b b-bl">✓ BOOKED</span>':'<span class="b b-r">EXPIRED</span>';
+  let action='';
+  if(mine){
+    action=`<div class="small">👁 ${g.views} views · 🔓 ${g.unlockCount} unlocks</div>
+    ${g.status==='live'?`<button class="btn btn-sm btn-o" onclick="fresh('${g.id}','goods',1)">✓ Still available (24h renew)</button><button class="btn btn-sm btn-o" onclick="fresh('${g.id}','goods',0)">✗ Shipped — remove</button>`:''}`;
+  } else if(un){
+    action=`<div class="revealed"><div><b>Contact:</b> ${byId(g.by).name}</div><div><b>Phone:</b> ${byId(g.by).phone}</div><div><b>Company:</b> ${byId(g.by).company||'—'}</div><div><b>Pickup:</b> ${g.addr||'—'}</div><div><b>Expected rate:</b> ${g.rate||'—'}</div><div><b>Notes:</b> ${g.notes||'—'}</div></div>
+    <button class="btn btn-sm" onclick="openChat('${un.id}')">💬 Chat</button>
+    ${un.deal==='pending'?`<button class="btn btn-sm btn-y" onclick="deal('${un.id}',1)">✓ Deal Done</button><button class="btn btn-sm btn-o" onclick="deal('${un.id}',0)">✗ Failed</button>`:`<span class="b ${un.deal==='confirmed'?'b-g':'b-r'}">Deal ${un.deal}</span>`}`;
+  } else if(canUnlock&&g.status==='live'){
+    action=isBrokerLocked
+      ?`<div class="parda">🔒 Contact, exact location &amp; rate hidden<br><b>Subscribe (₹2,000/mo) to unlock listings</b></div>`
+      :`<div class="parda">🔒 Name · Phone · Exact pickup · Rate · Notes — hidden behind parda</div><button class="lockbtn" onclick="unlock('goods','${g.id}')">🔓 UNLOCK DETAILS — ₹150</button>`;
+  }
+  return `<div class="listing"><div class="l-top"><div><div class="l-route">${g.from} → ${g.to}</div><div class="l-meta">${g.type} · ${g.wt} Tonnes · Ready ${g.date}</div></div>${bstat}</div>
+  <div class="l-badges"><span class="b b-gray">Posted ${ago(g.created)}</span><span class="b b-p">by ${g.byRole}</span></div>${action}</div>`;
+}
+function truckCard(t,viewer){
+  const un=hasUnlock(viewer.id,'truck',t.id);
+  const mine=t.by===viewer.id;
+  const isBrokerLocked=viewer.role==='broker'&&viewer.tier==='free_preview';
+  let bstat=t.status==='live'?'<span class="b b-g">● LIVE</span>':t.status==='matched'?'<span class="b b-bl">✓ MATCHED</span>':'<span class="b b-r">EXPIRED</span>';
+  let action='';
+  if(mine){
+    action=`<div class="small">👁 ${t.views} views · 🔓 ${t.unlockCount} unlocks</div>
+    ${t.status==='live'?`<button class="btn btn-sm btn-o" onclick="fresh('${t.id}','truck',1)">✓ Still empty (renew)</button><button class="btn btn-sm btn-o" onclick="fresh('${t.id}','truck',0)">✗ Loaded — remove</button>`:''}`;
+  } else if(un){
+    action=`<div class="revealed"><div><b>Truck No:</b> ${t.truckNo}</div><div><b>Owner:</b> ${t.ownerName} · ${t.ownerPhone}</div><div><b>Driver:</b> ${t.driverName} · ${t.driverPhone}</div><div><b>Parked at:</b> ${t.parking}</div></div>
+    <button class="btn btn-sm" onclick="openChat('${un.id}')">💬 Chat</button>
+    ${un.deal==='pending'?`<button class="btn btn-sm btn-y" onclick="deal('${un.id}',1)">✓ Deal Done</button><button class="btn btn-sm btn-o" onclick="deal('${un.id}',0)">✗ Failed</button>`:`<span class="b ${un.deal==='confirmed'?'b-g':'b-r'}">Deal ${un.deal}</span>`}`;
+  } else if(t.status==='live'){
+    action=isBrokerLocked
+      ?`<div class="parda">🔒 Truck number, owner &amp; driver contacts hidden<br><b>Subscribe to unlock</b></div>`
+      :`<div class="parda">🔒 Truck no · Owner phone · Driver phone · Parking spot — hidden</div><button class="lockbtn" onclick="unlock('truck','${t.id}')">🔓 UNLOCK DETAILS — ₹150</button>`;
+  }
+  return `<div class="listing"><div class="l-top"><div><div class="l-route">${t.city} → ${t.to}</div><div class="l-meta">${t.type} · ${t.cap}T capacity · Available ${t.date}${t.detour?' · Detour OK':''}</div></div>${bstat}</div>
+  <div class="l-badges"><span class="b b-gray">Posted ${ago(t.created)}</span></div>${action}</div>`;
+}
+function fresh(id,kind,yes){
+  const arr=kind==='goods'?S.goods:S.trucks;const l=arr.find(x=>x.id===id);
+  if(yes){l.status='live';l.created=l.created;notify(me().id,'✅ Listing renewed for another 24 hours. We will check in tomorrow.')}
+  else{l.status=kind==='goods'?'booked':'matched';notify(me().id,'Listing removed. Post again anytime.')}
+  render();
+}
+function deal(unId,ok){
+  const un=S.unlocks.find(u=>u.id===unId);un.deal=ok?'confirmed':'failed';
+  const arr=un.kind==='goods'?S.goods:S.trucks;const l=arr.find(x=>x.id===un.lid);
+  if(ok){l.status=un.kind==='goods'?'booked':'matched';
+    const u=me();if(u.role==='broker')u.deals++;
+    notify(l.by,'✅ Deal confirmed on your listing! Thank you for using MAPS FREIGHT.');
+    notify(u.id,`✅ Deal confirmed. ${u.role==='broker'?'Your total deals: '+u.deals+' 💪':''}`);
+  } else {
+    l.status='live';notify(l.by,'A connection did not convert — your listing is LIVE again for others.');
+  }
+  render();
+}
+
+/* ----- UNLOCK ----- */
+function unlock(kind,lid){
+  const u=me();
+  if(u.role==='broker'){
+    if(!u.approved)return alert('Your broker account is pending admin approval. You are in Free Preview.');
+    if(u.tier==='free_preview')return alert('Subscribe (₹2,000/month) to unlock listings.');
+  }
+  if(hasUnlock(u.id,kind,lid))return alert('Already unlocked — no double charge.');
+  if(u.wallet<150){alert('Insufficient balance. Top up your wallet (need ₹150).');go('app','wallet');return}
+  if(!confirm('Unlock full details for ₹150? This will be deducted from your wallet.'))return;
+  u.wallet-=150;
+  S.tx.unshift({uid:u.id,type:'Unlock fee — '+kind+' listing',amount:-150,after:u.wallet,at:Date.now()});
+  const un={id:'un'+Date.now(),by:u.id,kind,lid,amount:150,deal:'pending',at:Date.now()};
+  S.unlocks.push(un);S.chats[un.id]=[];
+  S.revenue.unlock+=150;
+  const arr=kind==='goods'?S.goods:S.trucks;const l=arr.find(x=>x.id===lid);l.unlockCount++;
+  if(u.role==='broker')u.unlocks++;
+  notify(l.by,'🔔 A '+(u.role==='broker'?'verified broker':u.role)+' has unlocked your listing details and may contact you soon. Keep your phone available.');
+  notify(u.id,`🔓 Unlocked. ${fmt(150)} deducted. Balance: ${fmt(u.wallet)}${u.wallet<300?' ⚠ Low balance — top up soon.':''}`);
+  render();
+}
+
+/* ----- CHAT ----- */
+function openChat(unId){S.sel={chat:unId};render();setTimeout(()=>{const c=document.querySelector('.chatbox');if(c)c.scrollTop=c.scrollHeight},50)}
+function chatUI(){
+  if(!S.sel||!S.sel.chat)return'';
+  const un=S.unlocks.find(u=>u.id===S.sel.chat);if(!un)return'';
+  const arr=un.kind==='goods'?S.goods:S.trucks;const l=arr.find(x=>x.id===un.lid);
+  const other=me().id===un.by?byId(l.by):byId(un.by);
+  const msgs=S.chats[un.id]||[];
+  return `<div class="card"><h3>💬 Chat — ${l.from||l.city} → ${l.to} <span class="small">(with ${other.name})</span></h3>
+  <div class="chatbox">${msgs.length?msgs.map(m=>m.blocked?`<div class="cmsg blocked">⚠ Message blocked — phone numbers / contacts cannot be shared in chat. Repeat violations = suspension.</div>`:`<div class="cmsg ${m.from===me().id?'me':''}"><div class="who">${byId(m.from).name}</div>${m.text}</div>`).join(''):'<div class="small" style="text-align:center;padding:20px">Chat opened after unlock. Coordinate here — text only, no numbers.</div>'}</div>
+  <div class="row"><input id="cmsg" placeholder="Type message (no phone numbers)..." style="margin:0"><button class="btn btn-sm" style="margin:0" onclick="sendMsg('${un.id}')">Send</button></div>
+  <button class="btn btn-o btn-sm" onclick="S.sel=null;render()">Close chat</button></div>`;
+}
+function sendMsg(unId){
+  const t=$('cmsg').value.trim();if(!t)return;
+  const blocked=isBlocked(t);
+  S.chats[unId].push({from:me().id,text:t,blocked,at:Date.now()});
+  if(blocked){me().violations=(me().violations||0)+1;
+    if(me().violations>=3)notify('admin','⚠ Chat violation x'+me().violations+' by '+me().name+' — review recommended.');
+  } else {
+    const un=S.unlocks.find(u=>u.id===unId);const arr=un.kind==='goods'?S.goods:S.trucks;const l=arr.find(x=>x.id===un.lid);
+    const other=me().id===un.by?l.by:un.by;
+    notify(other,'💬 New chat message from '+me().name+' on your listing.');
+  }
+  render();openChat(unId);
+}
+
+/* ---------- SHIPPER PORTAL ---------- */
+function Shipper(){
+  const u=me();let body='';
+  if(S.tab==='post')body=postGoodsForm();
+  else if(S.tab==='my')body=`<h2>My Goods Listings</h2>`+(S.goods.filter(g=>g.by===u.id).map(g=>goodsCard(g,u)).join('')||'<div class="card small">Nothing posted yet.</div>');
+  else if(S.tab==='trucks')body=`<h2>Empty Trucks Feed</h2><div class="warn">⏱ As a Shipper you see truck listings with a 2-hour delay. Brokers see them instantly.</div>`+S.trucks.filter(t=>t.status==='live'||hasUnlock(u.id,'truck',t.id)).map(t=>truckCard(t,u)).join('')+chatUI();
+  else if(S.tab==='wallet')body=walletPanel();
+  else body=notifPanel();
+  return Top()+`<div class="screen">${body}</div>`+nav([{t:'post',ic:'➕',l:'Post Goods'},{t:'my',ic:'📦',l:'My Listings'},{t:'trucks',ic:'🚚',l:'Find Trucks'},{t:'wallet',ic:'💰',l:'Wallet'},{t:'notif',ic:'🔔',l:'Alerts'}]);
+}
+function postGoodsForm(){
+  return `<h2>Post Goods</h2><p class="sub">Free. Live instantly. Brokers with return trucks will connect.</p>
+  <div class="card">
+  <label>Goods Type <span class="req">*</span></label><select id="gt">${opts(GOODS)}</select>
+  <div class="row"><div><label>Weight (Tonnes) <span class="req">*</span></label><input id="gw" type="number" placeholder="12"></div>
+  <div><label>Ready Date <span class="req">*</span></label><input id="gd" type="date" value="2026-07-12"></div></div>
+  <div class="row"><div><label>Pickup City <span class="req">*</span></label><select id="gf">${opts(CITIES)}</select></div>
+  <div><label>Destination <span class="req">*</span></label><select id="gto">${opts(CITIES)}</select></div></div>
+  <label>Exact Pickup Address <span class="opt">(hidden behind parda)</span></label><input id="ga" placeholder="GIDC Phase 2, Plot...">
+  <label>Expected Rate <span class="opt">(hidden behind parda)</span></label><input id="gr" placeholder="₹40,000–45,000">
+  <label>Special Notes <span class="opt">(hidden behind parda)</span></label><textarea id="gn" rows="2" placeholder="Hazmat / covered truck / forklift..."></textarea>
+  <div id="perr"></div><button class="btn" onclick="postGoods()">Post Goods → LIVE</button></div>`;
+}
+function postGoods(){
+  const wt=parseFloat(gv('gw'));
+  if(!wt||wt<=0){$('perr').innerHTML='<div class="err">Enter valid weight.</div>';return}
+  if(gv('gf')===gv('gto')){$('perr').innerHTML='<div class="err">Pickup and destination cannot be same.</div>';return}
+  const g={id:'g'+Date.now(),by:me().id,byRole:me().role,type:gv('gt'),wt,from:gv('gf'),to:gv('gto'),date:gv('gd'),addr:gv('ga'),rate:gv('gr'),notes:gv('gn'),status:'live',views:0,unlockCount:0,created:Date.now()};
+  S.goods.unshift(g);
+  notify(me().id,`✅ Your goods listing is LIVE! ${g.type} ${g.wt}T | ${g.from} → ${g.to} | ${g.date}. Brokers can now see it.`);
+  S.users.filter(x=>x.role==='broker'&&x.tier==='standard').forEach(b=>notify(b.id,`🚨 New goods listing matching your routes! ${g.type} ${g.wt}T | ${g.from} → ${g.to}. Posted just now — act fast.`));
+  go('app','my');
+}
+
+/* ---------- TRANSPORTER PORTAL ---------- */
+function Transporter(){
+  const u=me();let body='';
+  if(S.tab==='postT')body=postTruckForm();
+  else if(S.tab==='postG')body=postGoodsForm();
+  else if(S.tab==='my')body=`<h2>My Listings</h2><h3>Trucks</h3>`+(S.trucks.filter(t=>t.by===u.id).map(t=>truckCard(t,u)).join('')||'<p class="small">None.</p>')+`<h3 style="margin-top:14px">Goods</h3>`+(S.goods.filter(g=>g.by===u.id).map(g=>goodsCard(g,u)).join('')||'<p class="small">None.</p>');
+  else if(S.tab==='feedG')body=`<h2>Goods Feed</h2><div class="warn">⏱ Transporters see new listings after a 2-hour delay. Subscribed brokers see them instantly + all cities.</div>`+S.goods.filter(g=>g.by!==u.id&&(g.status==='live'||hasUnlock(u.id,'goods',g.id))).map(g=>goodsCard(g,u)).join('')+chatUI();
+  else if(S.tab==='wallet')body=walletPanel();
+  else body=notifPanel();
+  return Top()+`<div class="screen">${body}</div>`+nav([{t:'postT',ic:'🚚',l:'Post Truck'},{t:'postG',ic:'➕',l:'Post Goods'},{t:'my',ic:'📋',l:'My Posts'},{t:'feedG',ic:'📦',l:'Goods Feed'},{t:'wallet',ic:'💰',l:'Wallet'},{t:'notif',ic:'🔔',l:'Alerts'}]);
+}
+function postTruckForm(){
+  return `<h2>Post Empty Truck</h2><p class="sub">Free. Brokers &amp; shippers with matching goods will connect.</p>
+  <div class="card">
+  <div class="row"><div><label>Truck Type <span class="req">*</span></label><select id="tt2">${opts(TTYPES)}</select></div>
+  <div><label>Capacity (T) <span class="req">*</span></label><input id="tc" type="number" placeholder="20"></div></div>
+  <div class="row"><div><label>Current City <span class="req">*</span></label><select id="tcity">${opts(CITIES)}</select></div>
+  <div><label>Heading Toward <span class="req">*</span></label><select id="tto">${opts(CITIES)}</select></div></div>
+  <label>Available From <span class="req">*</span></label><input id="td" type="date" value="2026-07-11">
+  <label class="checkline"><input type="checkbox" id="tdet"> Willing to detour for pickup</label>
+  <hr class="hr"><p class="small" style="margin-bottom:8px">🔒 Below fields stay hidden behind parda until someone pays ₹150:</p>
+  <label>Truck Number <span class="req">*</span></label><input id="tno" placeholder="GJ-12-AB-1234" style="text-transform:uppercase">
+  <div class="row"><div><label>Driver Name <span class="req">*</span></label><input id="tdn" placeholder="Driver"></div>
+  <div><label>Driver Phone <span class="req">*</span></label><input id="tdp" maxlength="10" placeholder="10-digit"></div></div>
+  <label>Parking Location</label><input id="tp" placeholder="Gandhidham Truck Terminal Gate 3">
+  <div id="terr"></div><button class="btn" onclick="postTruck()">Post Truck → LIVE</button></div>`;
+}
+function postTruck(){
+  const cap=parseFloat(gv('tc'));const E=m=>{$('terr').innerHTML=`<div class="err">${m}</div>`};
+  if(!cap||cap<=0)return E('Enter valid capacity.');
+  if(gv('tno').length<6)return E('Enter truck number.');
+  if(!vPhone(gv('tdp')))return E('Valid 10-digit driver phone required.');
+  const u=me();
+  const t={id:'t'+Date.now(),by:u.id,type:gv('tt2'),cap,city:gv('tcity'),to:gv('tto'),date:gv('td'),detour:$('tdet').checked,truckNo:gv('tno').toUpperCase(),ownerName:u.name,ownerPhone:u.phone,driverName:gv('tdn'),driverPhone:gv('tdp'),parking:gv('tp'),status:'live',views:0,unlockCount:0,created:Date.now()};
+  S.trucks.unshift(t);
+  notify(u.id,`✅ Your empty truck listing is LIVE! ${t.type} ${t.cap}T | ${t.city} → ${t.to} | ${t.date}.`);
+  S.users.filter(x=>x.role==='broker'&&x.tier==='standard').forEach(b=>notify(b.id,`🚛 New empty truck on your route! ${t.type} ${t.cap}T | ${t.city} → ${t.to}.`));
+  go('app','my');
+}
+
+/* ---------- BROKER PORTAL ---------- */
+function Broker(){
+  const u=me();let body='';let float='';
+  if(!u.approved) float=`<div class="freefloat">⏳ <b>Account under verification.</b> Admin reviews your Aadhaar. You are in Free Preview — browse but cannot unlock yet.</div>`;
+  else if(u.tier==='free_preview') float=`<div class="freefloat">🎉 <b>Approved!</b> Subscribe for <b>₹2,000/month</b> to unlock listings, get instant feed + WhatsApp route alerts. <button class="btn btn-sm btn-y" onclick="subscribe()" style="margin-top:6px">Subscribe Now — ₹2,000</button></div>`;
+  if(S.tab==='feedG')body=`<h2>Goods Feed</h2>${u.tier==='standard'?'<div class="ok">⚡ BROKER PERK: You see listings INSTANTLY, all cities in your routes. Non-members wait 2 hours.</div>':'<div class="info">Free Preview — limited info shown. Subscribe to unlock.</div>'}`+S.goods.filter(g=>g.status==='live'||hasUnlock(u.id,'goods',g.id)).map(g=>goodsCard(g,u)).join('')+chatUI();
+  else if(S.tab==='feedT')body=`<h2>Empty Trucks Feed</h2>`+S.trucks.filter(t=>t.status==='live'||hasUnlock(u.id,'truck',t.id)).map(t=>truckCard(t,u)).join('')+chatUI();
+  else if(S.tab==='un')body=unlockHistory();
+  else if(S.tab==='postB')body=u.tier==='standard'?postGoodsForm().replace('Post Goods</h2>','Post on Behalf 🤝</h2>').replace('Free. Live instantly. Brokers with return trucks will connect.','Broker perk: post goods for a goods owner in your network who is not on the app. Listing shows as "posted by broker".'):'<div class="card"><h3>Post on Behalf</h3><p class="small">This is a paid-member perk. Subscribe to post goods listings on behalf of goods owners in your network.</p></div>';
+  else if(S.tab==='wallet')body=brokerWallet();
+  else body=notifPanel();
+  return Top()+`<div class="screen">${brokerHead()}${body}</div>${float}`+nav([{t:'feedG',ic:'📦',l:'Goods'},{t:'feedT',ic:'🚚',l:'Trucks'},{t:'un',ic:'🔓',l:'My Unlocks'},{t:'postB',ic:'🤝',l:'Post f/Behalf'},{t:'wallet',ic:'💰',l:'Wallet+Sub'},{t:'notif',ic:'🔔',l:'Alerts'}]);
+}
+function brokerHead(){
+  const u=me();
+  return `<div class="stat-grid"><div class="stat"><div class="n">${u.unlocks}</div><div class="l">UNLOCKS</div></div><div class="stat"><div class="n">${u.deals}</div><div class="l">DEALS DONE</div></div></div>`;
+}
+function subscribe(){
+  const u=me();
+  if(!confirm('Subscribe MAPS FREIGHT Broker — ₹2,000/month?\n(Demo: payment simulated. Real app: Razorpay recurring.)'))return;
+  u.tier='standard';u.subEnd='2026-08-08';S.revenue.sub+=2000;
+  S.tx.unshift({uid:u.id,type:'Broker Subscription (monthly)',amount:-0,after:u.wallet,at:Date.now()});
+  notify(u.id,'🎉 Subscription active! You now see listings instantly, get route alerts on WhatsApp, and can unlock any listing for ₹150. Renews monthly.');
+  render();
+}
+function brokerWallet(){
+  const u=me();
+  const sub=u.tier==='standard'?`<div class="ok">✓ BROKER STANDARD active · Renews ${u.subEnd} · ₹2,000/month<br><span class="small">Perks: instant feed · WhatsApp route alerts · all-city coverage · verified badge · post-on-behalf · ₹150/unlock</span></div><div class="info">🚀 <b>Premium (₹5,000/mo) — coming soon:</b> 30-min head start on every listing before Standard brokers + ₹100 unlocks + monthly route intelligence report.</div>`:
+  u.approved?`<div class="warn">Not subscribed. <button class="btn btn-sm btn-y" onclick="subscribe()">Subscribe ₹2,000/month</button></div>`:`<div class="warn">Pending admin approval — subscription opens after approval.</div>`;
+  return `<h2>Wallet &amp; Membership</h2>${sub}`+walletPanel().replace('<h2>Wallet</h2>','');
+}
+function unlockHistory(){
+  const u=me();const mine=S.unlocks.filter(x=>x.by===u.id);
+  return `<h2>My Unlocks</h2><p class="sub">Contacts you have paid for — saved forever, no double charge.</p>`+
+  (mine.length?mine.map(un=>{const arr=un.kind==='goods'?S.goods:S.trucks;const l=arr.find(x=>x.id===un.lid);return un.kind==='goods'?goodsCard(l,u):truckCard(l,u)}).join(''):'<div class="card small">No unlocks yet. Browse feeds and unlock matching listings.</div>')+chatUI();
+}
+
+/* ---------- ADMIN PORTAL ---------- */
+function Admin(){
+  let body='';
+  if(S.tab==='dash')body=admDash();
+  else if(S.tab==='appr')body=admAppr();
+  else if(S.tab==='list')body=admListings();
+  else if(S.tab==='users')body=admUsers();
+  else body=admRev();
+  return Top()+`<div class="screen"><div class="pill pill-r" style="display:inline-block;margin-bottom:10px">ADMIN — AMAN ONLY</div>${body}</div>`+
+  `<div class="bottomnav">${[{t:'dash',ic:'📊',l:'Dashboard'},{t:'appr',ic:'✅',l:'Approvals'},{t:'list',ic:'📋',l:'Listings'},{t:'users',ic:'👥',l:'Users'},{t:'rev',ic:'💵',l:'Revenue'}].map(i=>`<div class="bn ${S.tab===i.t?'on':''}" onclick="go('admin','${i.t}')"><span class="ic">${i.ic}</span>${i.l}</div>`).join('')}</div>`;
+}
+function admDash(){
+  const pend=S.users.filter(u=>u.role==='broker'&&!u.approved).length;
+  const liveG=S.goods.filter(g=>g.status==='live').length,liveT=S.trucks.filter(t=>t.status==='live').length;
+  const paid=S.users.filter(u=>u.role==='broker'&&u.tier==='standard').length;
+  return `<h2>Dashboard</h2>
+  <div class="stat-grid">
+  <div class="stat"><div class="n">${fmt(S.revenue.sub+S.revenue.unlock)}</div><div class="l">TOTAL REVENUE</div></div>
+  <div class="stat"><div class="n">${paid}</div><div class="l">PAYING BROKERS</div></div>
+  <div class="stat"><div class="n">${liveG}</div><div class="l">LIVE GOODS</div></div>
+  <div class="stat"><div class="n">${liveT}</div><div class="l">LIVE TRUCKS</div></div>
+  <div class="stat"><div class="n">${S.unlocks.length}</div><div class="l">TOTAL UNLOCKS</div></div>
+  <div class="stat"><div class="n" style="color:${pend?'var(--red)':'var(--green)'}">${pend}</div><div class="l">PENDING APPROVALS</div></div></div>
+  <div class="card"><h3>Hot Routes (live listings)</h3>${routeStats()}</div>
+  <div class="card"><h3>Recent Platform Activity</h3>${S.notifs.slice(0,8).map(n=>`<div class="adm-row"><span style="font-size:12px">${n.text.slice(0,60)}${n.text.length>60?'…':''}</span><span class="small">${ago(n.at)}</span></div>`).join('')||'<p class="small">No activity.</p>'}</div>`;
+}
+function routeStats(){
+  const m={};S.goods.filter(g=>g.status==='live').forEach(g=>{const k=g.from+' → '+g.to;m[k]=(m[k]||0)+1});
+  const e=Object.entries(m).sort((a,b)=>b[1]-a[1]);
+  return e.length?e.map(([r,c])=>`<div class="adm-row"><span>${r}</span><b>${c} listing${c>1?'s':''}</b></div>`).join(''):'<p class="small">No live goods.</p>';
+}
+function admAppr(){
+  const pend=S.users.filter(u=>u.role==='broker'&&!u.approved);
+  return `<h2>Broker Approvals</h2><p class="sub">Verify Aadhaar + legitimacy before approving. Approval unlocks subscription option.</p>`+
+  (pend.length?pend.map(b=>`<div class="card"><h3>${b.name} — ${b.firm}</h3>
+  <p class="small">📱 ${b.phone} · 📍 ${b.city} · PAN ${b.pan} · Aadhaar ${b.aadhaar} · ${b.years} yrs · Routes: ${b.routes.join(', ')}</p>
+  <p class="small">📎 aadhaar_front.jpg (uploaded — demo)</p>
+  <button class="btn btn-sm" onclick="approve('${b.id}',1)">✓ Approve</button><button class="btn btn-sm btn-r" onclick="approve('${b.id}',0)">✗ Reject</button></div>`).join(''):'<div class="ok">No pending approvals. All brokers verified. ✓</div>');
+}
+function approve(id,ok){
+  const b=byId(id);
+  if(ok){b.approved=true;b.status='active';notify(b.id,'🎉 Your MAPS FREIGHT broker account is APPROVED! Subscribe (₹2,000/month) to start unlocking listings and connecting deals.')}
+  else{b.status='rejected';notify(b.id,'Your broker application was not approved. Contact support for details.')}
+  render();
+}
+function admListings(){
+  return `<h2>All Listings — Full Admin View</h2><p class="sub">Admin sees everything. No parda.</p>
+  <h3>Goods (${S.goods.length})</h3>`+S.goods.map(g=>`<div class="listing"><div class="l-route">${g.from} → ${g.to} <span class="b ${g.status==='live'?'b-g':g.status==='booked'?'b-bl':'b-y'}">${g.status.toUpperCase()}</span></div>
+  <div class="l-meta">${g.type} ${g.wt}T · ${g.date} · by <b>${byId(g.by).name}</b> (${byId(g.by).phone}) · ${g.addr||'no addr'} · rate ${g.rate||'—'} · 👁${g.views} 🔓${g.unlockCount}</div>
+  ${g.status==='live'?`<button class="btn btn-sm btn-r" onclick="forceExp('goods','${g.id}')">Force Expire</button>`:''}</div>`).join('')+
+  `<h3 style="margin-top:14px">Trucks (${S.trucks.length})</h3>`+S.trucks.map(t=>`<div class="listing"><div class="l-route">${t.city} → ${t.to} <span class="b ${t.status==='live'?'b-g':'b-bl'}">${t.status.toUpperCase()}</span></div>
+  <div class="l-meta">${t.type} ${t.cap}T · ${t.truckNo} · owner ${t.ownerName} ${t.ownerPhone} · driver ${t.driverName} ${t.driverPhone} · 👁${t.views} 🔓${t.unlockCount}</div>
+  ${t.status==='live'?`<button class="btn btn-sm btn-r" onclick="forceExp('truck','${t.id}')">Force Expire</button>`:''}</div>`).join('');
+}
+function forceExp(kind,id){const arr=kind==='goods'?S.goods:S.trucks;arr.find(x=>x.id===id).status='expired';render()}
+function admUsers(){
+  return `<h2>Users (${S.users.length})</h2>`+S.users.map(u=>`<div class="card">
+  <h3>${u.name} <span class="b ${u.role==='broker'?'b-p':u.role==='shipper'?'b-bl':'b-y'}">${u.role.toUpperCase()}</span> <span class="b ${u.status==='active'?'b-g':u.status==='suspended'?'b-r':'b-y'}">${u.status}</span></h3>
+  <p class="small">📱 ${u.phone} · 📍 ${u.city} · PAN ${u.pan} · Wallet ${fmt(u.wallet)}${u.role==='broker'?` · Tier: ${u.tier} · Unlocks ${u.unlocks} · Deals ${u.deals} · ⚠ Violations: ${u.violations||0}`:''}</p>
+  ${u.status!=='suspended'?`<button class="btn btn-sm btn-r" onclick="susp('${u.id}')">Suspend</button>`:`<button class="btn btn-sm" onclick="unsusp('${u.id}')">Reactivate</button>`}</div>`).join('');
+}
+function susp(id){byId(id).status='suspended';notify(id,'⚠ Your account has been suspended. Contact support.');render()}
+function unsusp(id){byId(id).status='active';notify(id,'✅ Your account has been reactivated.');render()}
+function admRev(){
+  return `<h2>Revenue</h2>
+  <div class="stat-grid">
+  <div class="stat"><div class="n">${fmt(S.revenue.sub)}</div><div class="l">SUBSCRIPTIONS</div></div>
+  <div class="stat"><div class="n">${fmt(S.revenue.unlock)}</div><div class="l">UNLOCK FEES</div></div></div>
+  <div class="card" style="background:var(--asphalt);color:#fff;text-align:center"><div style="font-size:12px;opacity:.6">TOTAL PLATFORM REVENUE</div><div style="font-size:34px;font-weight:800;color:var(--yellow)">${fmt(S.revenue.sub+S.revenue.unlock)}</div></div>
+  <div class="card"><h3>Unlock Log</h3>${S.unlocks.length?S.unlocks.map(u=>`<div class="adm-row"><span>${byId(u.by).name} → ${u.kind} listing</span><b style="color:var(--green)">+₹${u.amount}</b></div>`).join(''):'<p class="small">No unlocks yet.</p>'}</div>
+  <div class="card"><h3>Pricing Config (live)</h3>
+  <div class="adm-row"><span>Unlock fee</span><b>₹150</b></div>
+  <div class="adm-row"><span>Broker Standard</span><b>₹2,000/mo</b></div>
+  <div class="adm-row"><span>Broker Premium (planned M4-6)</span><b>₹5,000/mo · ₹100/unlock · 30-min head start</b></div>
+  <div class="adm-row"><span>Stale-lead refund window</span><b>24 hours</b></div></div>`;
+}
+
+render();
+</script>
+</body>
+</html>
